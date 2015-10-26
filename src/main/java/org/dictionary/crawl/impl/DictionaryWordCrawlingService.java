@@ -1,6 +1,7 @@
 package org.dictionary.crawl.impl;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
@@ -28,9 +29,13 @@ public class DictionaryWordCrawlingService extends AbstractWordCrawlingService
 	@Override
 	public List<WordSense> getWordSenses(String wordToLookup)
 	{
-		String htmlPage = getPage(wordToLookup);
+		if (StringUtils.isNotBlank(wordToLookup))
+		{
+			String htmlPage = getPage(wordToLookup);
+			return extractWordSensesFromHtmlPage(htmlPage);
+		}
 
-		return extractWordSensesFromHtmlPage(htmlPage);
+		return Collections.emptyList();
 	}
 
 	List<WordSense> extractWordSensesFromHtmlPage(String htmlPage)

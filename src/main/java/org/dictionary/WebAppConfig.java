@@ -2,6 +2,7 @@ package org.dictionary;
 
 import java.util.List;
 
+import org.dictionary.crawl.impl.DictionaryWordCrawlingService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
@@ -25,7 +26,7 @@ import org.springframework.web.servlet.view.freemarker.FreeMarkerViewResolver;
 @EnableWebMvc
 @EnableAsync
 @EnableScheduling
-@ComponentScan("org.molgenis.coding")
+@ComponentScan("org.dictionary")
 public class WebAppConfig extends WebMvcConfigurerAdapter
 {
 	@Override
@@ -74,5 +75,11 @@ public class WebAppConfig extends WebMvcConfigurerAdapter
 		result.setTemplateLoaderPath("classpath:/templates/");
 
 		return result;
+	}
+
+	@Bean
+	public DictionaryWordCrawlingService dictionaryWordCrawlingService()
+	{
+		return new DictionaryWordCrawlingService();
 	}
 }
