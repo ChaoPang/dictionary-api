@@ -3,12 +3,12 @@ package org.dictionary;
 import java.util.List;
 
 import org.dictionary.crawl.impl.DictionaryWordCrawlingService;
+import org.molgenis.util.GsonHttpMessageConverter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.ResourceHttpMessageConverter;
-import org.springframework.http.converter.json.MappingJacksonHttpMessageConverter;
 import org.springframework.http.converter.xml.Jaxb2RootElementHttpMessageConverter;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.annotation.EnableScheduling;
@@ -21,7 +21,6 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter
 import org.springframework.web.servlet.view.freemarker.FreeMarkerConfigurer;
 import org.springframework.web.servlet.view.freemarker.FreeMarkerViewResolver;
 
-@SuppressWarnings("deprecation")
 @Configuration
 @EnableWebMvc
 @EnableAsync
@@ -42,7 +41,7 @@ public class WebAppConfig extends WebMvcConfigurerAdapter
 	{
 		converters.add(new ResourceHttpMessageConverter());
 		converters.add(new Jaxb2RootElementHttpMessageConverter());
-		converters.add(new MappingJacksonHttpMessageConverter());
+		converters.add(new GsonHttpMessageConverter());
 	}
 
 	@Bean

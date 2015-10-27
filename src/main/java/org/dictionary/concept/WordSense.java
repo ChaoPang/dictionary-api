@@ -1,5 +1,8 @@
 package org.dictionary.concept;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import javax.annotation.Nullable;
 
 import org.molgenis.gson.AutoGson;
@@ -14,7 +17,9 @@ public abstract class WordSense
 	{
 		NOUN("noun"),
 
-		VERB("verb"),
+		VERB_WITH_OBJECT("verb (used with object)"),
+
+		VERB_WITHOUT_OBJECT("verb (used without object)"),
 
 		ADVERB("adverb"),
 
@@ -40,7 +45,16 @@ public abstract class WordSense
 		}
 	}
 
-	public abstract String getName();
+	private final static Map<String, WordType> MAP_WORD_TYPE;
+
+	static
+	{
+		MAP_WORD_TYPE = new HashMap<String, WordType>();
+		for (WordType internalWordType : WordType.values())
+		{
+			MAP_WORD_TYPE.put(internalWordType.toString(), internalWordType);
+		}
+	}
 
 	public abstract WordType getWordType();
 
@@ -49,22 +63,13 @@ public abstract class WordSense
 	@Nullable
 	public abstract String getExample();
 
-	public static WordSense create(String name, String type, String definition, String example)
+	public static WordSense create(String type, String definition, String example)
 	{
-		return new AutoValue_WordSense(name, toWordType(type), definition, example);
+		return new AutoValue_WordSense(toWordType(type), definition, example);
 	}
 
 	public static WordType toWordType(String wordType)
 	{
-		WordType valueOf;
-		try
-		{
-			valueOf = WordType.valueOf(wordType.toUpperCase());
-		}
-		catch (Exception e)
-		{
-			valueOf = WordType.UNDEFINED;
-		}
-		return valueOf;
+		return MAP_WORD_TYPE.containsKey(wordType) ? MAP_WORD_TYPE.get(wordType) : WordType.UNDEFINED;
 	}
 }

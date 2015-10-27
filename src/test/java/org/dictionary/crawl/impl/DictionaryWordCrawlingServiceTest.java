@@ -24,14 +24,14 @@ public class DictionaryWordCrawlingServiceTest
 		String htmlPage = Resources.toString(resource, Charset.forName("UTF-8"));
 
 		List<WordSense> extractWordSensesFromHtmlPage = dictionaryWordCrawlingService
-				.extractWordSensesFromHtmlPage(htmlPage);
+				.extractWordSensesFromHtmlPage(htmlPage).getWordSenses();
 
 		Assert.assertEquals(extractWordSensesFromHtmlPage.size(), 5);
 
-		Assert.assertEquals(extractWordSensesFromHtmlPage.get(0), WordSense.create("anniversary", "noun",
+		Assert.assertEquals(extractWordSensesFromHtmlPage.get(0), WordSense.create("noun",
 				"the yearly recurrence of the date of a past event:", "the tenth anniversary of their marriage."));
 
-		Assert.assertEquals(extractWordSensesFromHtmlPage.get(3), WordSense.create("anniversary", "adjective",
-				"returning or recurring each year; annual.", StringUtils.EMPTY));
+		Assert.assertEquals(extractWordSensesFromHtmlPage.get(3),
+				WordSense.create("adjective", "returning or recurring each year; annual.", StringUtils.EMPTY));
 	}
 }
