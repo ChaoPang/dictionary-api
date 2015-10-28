@@ -1,4 +1,3 @@
-//var dictionary_base_url = "http://localhost:8080/dictionary/";
 var dictionary_base_url = "http://ec2-52-29-0-236.eu-central-1.compute.amazonaws.com:8080/dictionary/";
 
 chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
@@ -30,10 +29,10 @@ function createPopWindow(data){
         
         dialogBody.append('<legend />');
         $.map(collectWordDefinitionsByType(data), function(definitions, wordType){
-        	$('<div />').append(wordType).css({'font-size':'15px'}).appendTo(dialogBody);
+        	$('<div />').append(wordType).appendTo(dialogBody);
         	var listOfDefinitionTag = $('<ul />').appendTo(dialogBody);
             $.each(definitions, function(index, definition){
-            	var eachDefinitionElement = $('<li />').append(definition.definition).css({'font-size':'15px'}).appendTo(listOfDefinitionTag);
+            	var eachDefinitionElement = $('<li />').append(definition.definition).appendTo(listOfDefinitionTag);
                 if(definition.example.length > 0){
                 	eachDefinitionElement.append('<i> Example:' + definition.example + '</i>');
                 }
@@ -59,15 +58,14 @@ function createPopWindow(data){
 }
 
 function createPronunciationAudio(data){
-	
+	var audioDiv = $('<div />');
     if(data.pronunciation){
-        var audio = $('<audio controls></audio>').css({'margin-top':'5px','margin-left':'25px'});
+        var audio = $('<audio controls></audio>').css({'margin-top':'5px','margin-left':'25px'}).appendTo(audioDiv);
         audio.append('<source src="' + data.pronunciation.oggSource + '" type="audio/ogg">');
         audio.append('<source src="' + data.pronunciation.mp3Source + '" type="audio/mpeg">');
         audio.append('Your browser does not support the audio element.');
-        return audio;
     }
-    return '';
+    return audioDiv;
 }
 
 function collectWordDefinitionsByType(data){
