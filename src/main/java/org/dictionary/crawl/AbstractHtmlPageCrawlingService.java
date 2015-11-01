@@ -1,4 +1,4 @@
-package org.dictionary.crawl.impl;
+package org.dictionary.crawl;
 
 import java.io.IOException;
 import java.util.Objects;
@@ -9,21 +9,21 @@ import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.util.EntityUtils;
-import org.dictionary.crawl.WordCrawlingService;
 import org.slf4j.Logger;
 
-public abstract class AbstractWordCrawlingService implements WordCrawlingService
+public abstract class AbstractHtmlPageCrawlingService<T>
 {
 	private final String pageBaseUrl;
 	private final Logger Logger;
 
-	public AbstractWordCrawlingService(String pageBaseUrl, Logger Logger)
+	public AbstractHtmlPageCrawlingService(String pageBaseUrl, Logger Logger)
 	{
 		this.pageBaseUrl = Objects.requireNonNull(pageBaseUrl);
 		this.Logger = Objects.requireNonNull(Logger);
 	}
 
-	@Override
+	public abstract T extractConceptsFromHtmlPage(String htmlPage);
+
 	public String getPage(String wordToLookup)
 	{
 		String url = pageBaseUrl + wordToLookup;

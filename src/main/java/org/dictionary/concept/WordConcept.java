@@ -22,20 +22,20 @@ public abstract class WordConcept
 	public abstract List<WordSense> getWordSenses();
 
 	@Nullable
-	public abstract List<String> getSynonyms();
+	public abstract List<Synonym> getSynonyms();
 
 	public static WordConcept create()
 	{
 		return new AutoValue_WordConcept(StringUtils.EMPTY, null, Collections.emptyList(), Collections.emptyList());
 	}
 
-	public static WordConcept create(String name, List<WordSense> wordSenses, List<String> synonyms)
+	public static WordConcept create(String name, List<WordSense> wordSenses, List<Synonym> synonyms)
 	{
 		return new AutoValue_WordConcept(name, null, wordSenses, synonyms);
 	}
 
 	public static WordConcept create(String name, Pronunciation pronunciation, List<WordSense> wordSenses,
-			List<String> synonyms)
+			List<Synonym> synonyms)
 	{
 		return new AutoValue_WordConcept(name, pronunciation, wordSenses, synonyms);
 	}

@@ -2,7 +2,9 @@ package org.dictionary;
 
 import java.util.List;
 
-import org.dictionary.crawl.impl.DictionaryWordCrawlingService;
+import org.dictionary.crawl.definition.impl.DictionaryWordCrawlingServiceImpl;
+import org.dictionary.crawl.synonym.SynonymCrawlingService;
+import org.dictionary.crawl.synonym.impl.SynonymCrawlingServiceImpl;
 import org.molgenis.util.GsonHttpMessageConverter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
@@ -77,8 +79,14 @@ public class WebAppConfig extends WebMvcConfigurerAdapter
 	}
 
 	@Bean
-	public DictionaryWordCrawlingService dictionaryWordCrawlingService()
+	public DictionaryWordCrawlingServiceImpl dictionaryWordCrawlingService()
 	{
-		return new DictionaryWordCrawlingService();
+		return new DictionaryWordCrawlingServiceImpl(SynonymCrawlingService());
+	}
+
+	@Bean
+	public SynonymCrawlingService SynonymCrawlingService()
+	{
+		return new SynonymCrawlingServiceImpl();
 	}
 }

@@ -8,7 +8,7 @@ import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.lang3.StringUtils;
 import org.dictionary.concept.WordConcept;
-import org.dictionary.crawl.impl.DictionaryWordCrawlingService;
+import org.dictionary.crawl.definition.impl.DictionaryWordCrawlingServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -27,7 +27,7 @@ import com.google.common.cache.LoadingCache;
 public class DictionaryController
 {
 	private final static String TEMPLATE_VIEW = "view-dictionary";
-	private final DictionaryWordCrawlingService dictionaryWordCrawlingService;
+	private final DictionaryWordCrawlingServiceImpl dictionaryWordCrawlingService;
 	private final LoadingCache<String, WordConcept> cachedWordConcepts = CacheBuilder.newBuilder().maximumSize(1000)
 			.expireAfterWrite(1, TimeUnit.DAYS).build(new CacheLoader<String, WordConcept>()
 			{
@@ -38,7 +38,7 @@ public class DictionaryController
 			});
 
 	@Autowired
-	public DictionaryController(DictionaryWordCrawlingService dictionaryWordCrawlingService)
+	public DictionaryController(DictionaryWordCrawlingServiceImpl dictionaryWordCrawlingService)
 	{
 		this.dictionaryWordCrawlingService = Objects.requireNonNull(dictionaryWordCrawlingService);
 	}

@@ -1,33 +1,41 @@
-package org.dictionary.crawl.impl;
+package org.dictionary.crawl.definition.impl;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
 import org.dictionary.concept.Pronunciation;
 import org.dictionary.concept.WordConcept;
 import org.dictionary.concept.WordSense;
+import org.dictionary.crawl.AbstractHtmlPageCrawlingService;
+import org.dictionary.crawl.definition.WordCrawlingService;
+import org.dictionary.crawl.synonym.SynonymCrawlingService;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 
-public class DictionaryWordCrawlingService extends AbstractWordCrawlingService
+public class DictionaryWordCrawlingServiceImpl extends AbstractHtmlPageCrawlingService<WordConcept>
+		implements WordCrawlingService
 {
 	private static final String PAGE_BASE_URL = "http://dictionary.reference.com/browse/";
-	private static final Logger LOGGER = LoggerFactory.getLogger(DictionaryWordCrawlingService.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(DictionaryWordCrawlingServiceImpl.class);
 	private static final String CLASS_ATTRIBUTE = "class";
 	private static final String DEFINITION_LIST_HTML_CLASS = "def-list";
 	private static final String WORD_TYPE_HTML_TAG = "header";
 	private static final String NON_ALPHANUMERIC_CHARS = "[^a-zA-Z0-9]";
+	private final SynonymCrawlingService synonymCrawlingService;
 
-	public DictionaryWordCrawlingService()
+	@Autowired
+	public DictionaryWordCrawlingServiceImpl(SynonymCrawlingService synonymCrawlingService)
 	{
 		super(PAGE_BASE_URL, LOGGER);
+		this.synonymCrawlingService = Objects.requireNonNull(synonymCrawlingService);
 	}
 
 	@Override
@@ -36,13 +44,13 @@ public class DictionaryWordCrawlingService extends AbstractWordCrawlingService
 		if (StringUtils.isNotBlank(wordToLookup))
 		{
 			String htmlPage = getPage(wordToLookup);
-			return extractWordSensesFromHtmlPage(htmlPage);
+			return extractConceptsFromHtmlPage(htmlPage);
 		}
 
 		return WordConcept.create();
 	}
 
-	WordConcept extractWordSensesFromHtmlPage(String htmlPage)
+	public WordConcept extractConceptsFromHtmlPage(String htmlPage)
 	{
 		List<WordSense> wordSenses = new ArrayList<>();
 
@@ -72,7 +80,7 @@ public class DictionaryWordCrawlingService extends AbstractWordCrawlingService
 
 		return WordConcept.create(wordName, pronunciation,
 				wordSenses.stream().filter(this::wordSenseContainsDefinition).collect(Collectors.toList()),
-				Collections.emptyList());
+				synonymCrawlingService.getSynonyms(wordName));
 	}
 
 	private Pronunciation extractPronunciation(Element mainElement)
@@ -103,7 +111,12 @@ public class DictionaryWordCrawlingService extends AbstractWordCrawlingService
 	private String extractDefinitionText(Element definitionElement)
 	{
 		Elements select = definitionElement.select(".def-content");
-		return select.size() > 0 ? select.first().ownText() : StringUtils.EMPTY;
+		if (select.size() > 0)
+		{
+			String text = select.first().ownText().replaceAll(NON_ALPHANUMERIC_CHARS, StringUtils.EMPTY);
+			return StringUtils.isBlank(text) ? select.first().text() : select.first().ownText();
+		}
+		return StringUtils.EMPTY;
 	}
 
 	private String extractWordName(Document htmlDocument)

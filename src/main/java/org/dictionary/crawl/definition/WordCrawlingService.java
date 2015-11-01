@@ -1,10 +1,8 @@
-package org.dictionary.crawl;
+package org.dictionary.crawl.definition;
 
 import org.dictionary.concept.WordConcept;
 
 public interface WordCrawlingService
 {
-	public abstract String getPage(String wordToLookup);
-
 	public abstract WordConcept getWordSenses(String wordToLookup);
 }

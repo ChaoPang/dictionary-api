@@ -29,6 +29,8 @@ public abstract class WordSense
 
 		ADJECTIVE("adjective"),
 
+		IDIOMS("idioms"),
+
 		UNDEFINED("undefined");
 
 		private String label;
@@ -52,11 +54,11 @@ public abstract class WordSense
 		MAP_WORD_TYPE = new HashMap<String, WordType>();
 		for (WordType internalWordType : WordType.values())
 		{
-			MAP_WORD_TYPE.put(internalWordType.toString(), internalWordType);
+			MAP_WORD_TYPE.put(internalWordType.toString().toLowerCase(), internalWordType);
 		}
 	}
 
-	public abstract WordType getWordType();
+	public abstract String getWordType();
 
 	public abstract String getDefinition();
 
@@ -65,7 +67,7 @@ public abstract class WordSense
 
 	public static WordSense create(String type, String definition, String example)
 	{
-		return new AutoValue_WordSense(toWordType(type), definition, example);
+		return new AutoValue_WordSense(toWordType(type.toLowerCase()).toString(), definition, example);
 	}
 
 	public static WordType toWordType(String wordType)
